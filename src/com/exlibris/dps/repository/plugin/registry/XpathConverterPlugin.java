@@ -2,10 +2,8 @@ package com.exlibris.dps.repository.plugin.registry;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.Map;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -61,31 +59,16 @@ public class XpathConverterPlugin implements ConverterRegistryPlugin {
 	private String xpathConverter(String ieXml) throws ParserConfigurationException, XPathExpressionException, SAXException, IOException{
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(true);
+		factory.setNamespaceAware(false);
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		StringReader reader = new StringReader(ieXml);
 		InputSource source = new InputSource(reader);
 		org.w3c.dom.Document doc = builder.parse(source);
 		XPathFactory xPathfactory = XPathFactory.newInstance(); 
 		javax.xml.xpath.XPath xpath = xPathfactory.newXPath();
-		xpath.setNamespaceContext(new DCNamespaceContext());
 		XPathExpression expr = xpath.compile(xpathStr);
 		return expr.evaluate(doc);	
 	}
 
 }
 
-class DCNamespaceContext implements NamespaceContext {
-       @Override
-       public String getNamespaceURI(String prefix) {
-               return "http://purl.org/dc/elements/1.1/";	         
-       }
-       @Override
-       public String getPrefix(String uri) {
-           throw new UnsupportedOperationException();
-       }
-       @Override
-       public Iterator getPrefixes(String uri) {
-           throw new UnsupportedOperationException();
-       }
-   }
